@@ -37,17 +37,17 @@ func main() {
 
 	router.GET("/drivers", func(c *gin.Context) {
 		c.String(http.StatusOK,
-			getHttp("http://ergast.com/api/f1/drivers.json?limit=160&offset=00"))
+			getHttp("http://ergast.com/api/f1/drivers.json?limit=900&offset=00"))
 	})
 
 	router.GET("/circuits", func(c *gin.Context) {
 		c.String(http.StatusOK,
-			getHttp("http://ergast.com/api/f1/circuits.json?limit=160&offset=00"))
+			getHttp("http://ergast.com/api/f1/circuits.json?limit=100&offset=00"))
 	})
 
 	router.GET("/teams", func(c *gin.Context) {
 		c.String(http.StatusOK,
-			getHttp("http://ergast.com/api/f1/constructors.json?limit=160&offset=00"))
+			getHttp("http://ergast.com/api/f1/constructors.json?limit=2500&offset=00"))
 	})
 
 	router.GET("/standing", func(c *gin.Context) {
