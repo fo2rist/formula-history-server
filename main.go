@@ -32,7 +32,7 @@ func main() {
 	router.Use(gin.Logger())
 
 	router.GET("/", func(c *gin.Context) {
-		c.String(http.StatusOK, string([]byte("**Formula 1 History API!**\nProxy for ergast.com")))
+		c.String(http.StatusOK, string([]byte("<html>**Formula 1 History API!** Proxy for ergast.com <a href=\"https://twitter.com/share?ref_src=twsrc%5Etfw\" class=\"twitter-share-button\" data-show-count=\"false\">Tweet</a><script async src=\"https://platform.twitter.com/widgets.js\" charset=\"utf-8\"></script></html>")))
 	})
 
 	router.GET("/drivers", func(c *gin.Context) {
