@@ -14,8 +14,17 @@ func GetSeasonCalendar() string {
 	responseData := models.CurrentSeasonResponse{}
 	if err := json.Unmarshal([]byte(response), &responseData); err != nil {
 		log.Printf("Can't parse\n%.25s", response)
+		return ""
 	}
-	return response
+
+	calendar := responseData.MRData.Data.ToDomainModel()
+
+	if str, err := json.MarshalIndent(calendar, "", " "); err != nil {
+		log.Print("Can't serialize: ", calendar, err)
+		return ""
+	} else {
+		return string(str)
+	}
 }
 
 func GetDrivers() string {
