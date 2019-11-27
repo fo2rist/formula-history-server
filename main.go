@@ -6,12 +6,22 @@ import (
 	"os"
 
 	"github.com/gin-gonic/gin"
+	_ "github.com/lib/pq"
+	"github.com/subosito/gotenv"
 
 	"github.com/fo2rist/formula-history/app/ergastapi"
+	"github.com/fo2rist/formula-history/app/storage"
 )
 
+var database *storage.Database
+
 func main() {
+	gotenv.OverLoad()
+
 	port := os.Getenv("PORT")
+	dbConnectionString := os.Getenv("DATABASE_URL")
+
+	database.InitDB(dbConnectionString)
 
 	if port == "" {
 		log.Fatal("$PORT must be set")
