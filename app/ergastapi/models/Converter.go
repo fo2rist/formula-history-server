@@ -8,7 +8,7 @@ type Vertex struct {
 	X, Y float64
 }
 
-func (season *Season) ToDomainModel() domain.Season {
+func (season *Season) ToDomainModel() *domain.Season {
 	result := domain.Season{
 		Year:  season.Year,
 		Races: make([]domain.Race, len(season.Races)),
@@ -35,5 +35,5 @@ func (season *Season) ToDomainModel() domain.Season {
 			},
 		}
 	}
-	return result
+	return &result
 }

@@ -10,6 +10,7 @@ import (
 	"github.com/subosito/gotenv"
 
 	"github.com/fo2rist/formula-history/app/ergastapi"
+	"github.com/fo2rist/formula-history/app/repository"
 	"github.com/fo2rist/formula-history/app/storage"
 )
 
@@ -19,13 +20,20 @@ func main() {
 	gotenv.OverLoad()
 
 	port := os.Getenv("PORT")
-	dbConnectionString := os.Getenv("DATABASE_URL")
-
-	database.InitDB(dbConnectionString)
-
 	if port == "" {
 		log.Fatal("$PORT must be set")
 	}
+
+	dbConnectionString := os.Getenv("DATABASE_URL")
+	database.InitDB(dbConnectionString)
+
+	client := ergastapi.ErgastClient{}
+
+	repo := repository.Repository{
+		WebClient: client,
+		Storage:   database,
+	}
+
 	router := gin.New()
 	router.Use(gin.Logger())
 
@@ -34,23 +42,28 @@ func main() {
 	})
 
 	router.GET("/drivers", func(c *gin.Context) {
-		c.String(http.StatusOK, ergastapi.GetDrivers())
+		c.String(http.StatusOK, client.GetDrivers())
 	})
 
 	router.GET("/circuits", func(c *gin.Context) {
-		c.String(http.StatusOK, ergastapi.GetCircuits())
+		c.String(http.StatusOK, client.GetCircuits())
 	})
 
 	router.GET("/teams", func(c *gin.Context) {
-		c.String(http.StatusOK, ergastapi.GetTeams())
+		c.String(http.StatusOK, client.GetTeams())
 	})
 
 	router.GET("/standing", func(c *gin.Context) {
-		c.String(http.StatusOK, ergastapi.GetStandings())
+		c.String(http.StatusOK, client.GetStandings())
 	})
 
 	router.GET("/season", func(c *gin.Context) {
-		c.String(http.StatusOK, ergastapi.GetSeasonCalendar())
+		calendar, _ := repo.GetSeasonCalendar()
+		if calendar != nil {
+			c.String(http.StatusOK, calendar.String())
+		} else {
+			c.String(http.StatusInternalServerError, "Can't fetch data")
+		}
 	})
 
 	router.Run(":" + port)

@@ -7,39 +7,37 @@ import (
 	"net/http"
 
 	"github.com/fo2rist/formula-history/app/ergastapi/models"
+	domain "github.com/fo2rist/formula-history/app/models"
 )
 
-func GetSeasonCalendar() string {
+type ErgastClient struct {}
+
+func (ErgastClient) GetSeasonCalendar() (*domain.Season, error) {
 	response := getHTTP("http://ergast.com/api/f1/current.json")
 	responseData := models.CurrentSeasonResponse{}
 	if err := json.Unmarshal([]byte(response), &responseData); err != nil {
 		log.Printf("Can't parse\n%.25s", response)
-		return ""
+		return nil, err
 	}
 
 	calendar := responseData.MRData.Data.ToDomainModel()
-
-	if str, err := json.MarshalIndent(calendar, "", " "); err != nil {
-		log.Print("Can't serialize: ", calendar, err)
-		return ""
-	} else {
-		return string(str)
-	}
+	log.Printf("Parsed: %v", calendar)
+	return calendar, nil
 }
 
-func GetDrivers() string {
+func (ErgastClient) GetDrivers() string {
 	return getHTTP("http://ergast.com/api/f1/drivers.json?limit=900&offset=00")
 }
 
-func GetCircuits() string {
+func (ErgastClient) GetCircuits() string {
 	return getHTTP("http://ergast.com/api/f1/circuits.json?limit=100&offset=00")
 }
 
-func GetTeams() string {
+func (ErgastClient) GetTeams() string {
 	return getHTTP("http://ergast.com/api/f1/constructors.json?limit=2500&offset=00")
 }
 
-func GetStandings() string {
+func (ErgastClient) GetStandings() string {
 	return getHTTP("http://ergast.com/api/f1/current/driverStandings.json")
 }
 
