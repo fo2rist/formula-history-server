@@ -13,7 +13,7 @@ import (
 	"github.com/fo2rist/formula-history/app/storage"
 )
 
-var database *storage.Database
+var database *storage.Database = &storage.Database{}
 
 func main() {
 	gotenv.OverLoad()
